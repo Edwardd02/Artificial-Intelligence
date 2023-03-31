@@ -26,10 +26,11 @@ listZs = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
 bais = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
 baisZ = random.uniform(0, 1)
 # Set learning rate and number of iterations
-learning_rate = 1
+learning_rate = 0.5
 num_iterations = 10000
 for j in range(num_iterations):
     # error * sigmoid_derivative(sigmoid(sumOfProducts)) * X1
+    meanSquareError = 0
     for i in range(0, lenListX):
         h1 = sigmoid(bais[0] + listWeights[0][0] * listX[i][0] + listWeights[1][0] * listX[i][1])
         h2 = sigmoid(bais[1] + listWeights[0][1] * listX[i][0] + listWeights[1][1] * listX[i][1])
@@ -37,26 +38,31 @@ for j in range(num_iterations):
 
         output = sigmoid(baisZ + listZs[0] * h1 + listZs[1] * h2 + listZs[2] * h3)
         error = listTarget[i] - output
+
         derror = error * sigmoid_derivative(output)
-        error 
-        ds1 = error * sigmoid_derivative(output) * h1
-        ds2 = error * sigmoid_derivative(output) * h2
-        ds3 = error * sigmoid_derivative(output) * h3
-        #gradient = currentError * output * (1 - output)
-        bais[0] += learning_rate * derror * sigmoid_derivative(h1)
-        bais[1] += learning_rate * derror * sigmoid_derivative(h2)
-        bais[2] += learning_rate * derror * sigmoid_derivative(h3)
-        listWeights[0][0] += learning_rate * derror * sigmoid_derivative(h1) * listX[i][0]
-        listWeights[0][1] += learning_rate * derror * sigmoid_derivative(h2) * listX[i][0]
-        listWeights[0][2] += learning_rate * derror * sigmoid_derivative(h3) * listX[i][0]
-        listWeights[1][0] += learning_rate * derror * sigmoid_derivative(h1) * listX[i][1]
-        listWeights[1][1] += learning_rate * derror * sigmoid_derivative(h2) * listX[i][1]
-        listWeights[1][2] += learning_rate * derror * sigmoid_derivative(h3) * listX[i][1]
-        baisZ += learning_rate * error * sigmoid_derivative(output)
+        meanSquareError += error ** 2
+        ds1 = derror * h1
+        ds2 = derror * h2
+        ds3 = derror * h3
+        dh1 = derror * sigmoid_derivative(h1) * listZs[0]
+        dh2 = derror * sigmoid_derivative(h2) * listZs[1]
+        dh3 = derror * sigmoid_derivative(h3) * listZs[2]
+        baisZ += learning_rate * derror
         listZs[0] += learning_rate * ds1
         listZs[1] += learning_rate * ds2
         listZs[2] += learning_rate * ds3
+        #gradient = currentError * output * (1 - output)
+        bais[0] += learning_rate * dh1
+        bais[1] += learning_rate * dh2
+        bais[2] += learning_rate * dh3
+        listWeights[0][0] += learning_rate * dh1 * listX[i][0]
+        listWeights[0][1] += learning_rate * dh2 * listX[i][0]
+        listWeights[0][2] += learning_rate * dh3 * listX[i][0]
+        listWeights[1][0] += learning_rate * dh1 * listX[i][1]
+        listWeights[1][1] += learning_rate * dh2 * listX[i][1]
+        listWeights[1][2] += learning_rate * dh3 * listX[i][1]
 
+print("Mean Square Error:", meanSquareError)
 print("Target:", listTarget)
 print("Weights:", listWeights)
 test = [[0, 0], [0, 1], [1, 0], [1, 1]]
