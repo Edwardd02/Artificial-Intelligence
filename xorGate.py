@@ -26,8 +26,8 @@ listZs = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
 bais = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
 baisZ = random.uniform(0, 1)
 # Set learning rate and number of iterations
-learning_rate = 0.5
-num_iterations = 10000
+learning_rate = 10
+num_iterations = 1000
 for j in range(num_iterations):
     # error * sigmoid_derivative(sigmoid(sumOfProducts)) * X1
     meanSquareError = 0
