@@ -12,7 +12,7 @@ def sigmoid(x):
 # Define input data and target output values
 listX = [[0, 0], [0, 1], [1, 0], [1, 1]]
 lenListX = len(listX)
-listTarget = [0, 1, 1, 1]
+listTarget = [0, 0, 0, 1]
 
 # Define weights (randomly initialized)
 listWeights = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
