@@ -43,7 +43,7 @@ print("Output:", output)
 plt.plot(mse_history)
 plt.xlabel('Iteration')
 plt.ylabel('Mean Square Error')
-plt.title('Mean Square Error vs Iteration')
+plt.title('Mean Square Error vs Iteration Estimate the weights')
 plt.show()
 
 
