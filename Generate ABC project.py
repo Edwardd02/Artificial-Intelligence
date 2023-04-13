@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def sigmoid(x):
-    predicted = 1 / (1 + np.exp(-x))
-    return predicted
+    return 1 / (1 + np.exp(-x))
+
 
 
 def sigmoid_derivative(x):
@@ -28,74 +28,60 @@ listX = np.array([[0, 0, 1, 0, 0,
                    1, 0, 0, 0, 0,
                    1, 0, 0, 0, 0,
                    0, 1, 1, 1, 0]])
-lenListX = len(listX)
+
 listTarget = np.array([[1, 0, 0],
                        [0, 1, 0],
                        [0, 0, 1]])
+input_nodes = 25
+hidden_nodes = 18  # overfitting when larger than 20
+output_nodes = 3
 # Define weights (randomly initialized)
-listWeights = np.random.uniform(0, 1, size=(50, 25))
+weights_input_hidden = np.random.uniform(0, 1, size=(input_nodes, hidden_nodes))
 # Define bias (randomly initialized)
-bias = np.random.uniform(0, 1, size=(1, 50))
+bias_hidden = np.random.uniform(0, 1, size=hidden_nodes)
 # Define zs (randomly initialized)
-listZs = np.random.uniform(0, 1, size=(3, 50))
+weights_hidden_output = np.random.uniform(0, 1, size=(hidden_nodes, output_nodes))
 # Define zBias (randomly initialized)
-zBias = np.random.uniform(0, 1, size=(1, 3))
+bias_output = np.random.uniform(0, 1, size=output_nodes)
 # Set learning rate and number of iterations
 learning_rate = 10
 num_iterations = 1000
-meanSquareError = 0
 mse_history = []
 for n in range(num_iterations):
     meanSquareError = 0
-    for m in range(0, lenListX):
-        hiddenLayers = np.array([])
-        for i in range(len(listWeights)):
-            sum = 0
-            for j in range(len(listWeights[i])):
-                sum += listWeights[i][j] * listX[m][j]
-            sum += bias[0][i]
-            hiddenLayers = np.append(hiddenLayers, sigmoid(sum))
+    for i in range(0, len(listX)):
+        # Forward propagation
+        hiddenLayers = sigmoid(np.dot(listX[i], weights_input_hidden) + bias_hidden)
+        output = sigmoid(np.dot(hiddenLayers, weights_hidden_output) + bias_output)
 
-        output = np.array([])
-        for i in range(len(listZs)):
-            sum = 0
-            for j in range(len(listZs[i])):
-                sum += listZs[i][j] * hiddenLayers[j]
-            sum += zBias[0][i]
-            output = np.append(output, sigmoid(sum))
+        # Estimate error
+        error = listTarget[i] - output
+        meanSquareError += np.mean(error ** 2)
 
-        error = listTarget[m] - output
-        meanSquareError += error ** 2
-        derror = error * sigmoid_derivative(output)
-        dsArray1 = np.array([])
-        dsArray2 = np.array([])
-        dsArray3 = np.array([])
-        for i in range(len(hiddenLayers)):
-            dsArray1 = np.append(dsArray1, derror[0] * listZs[0][i])
-            dsArray2 = np.append(dsArray2, derror[1] * listZs[1][i])
-            dsArray3 = np.append(dsArray3, derror[2] * listZs[2][i])
-        dhArray = np.array([])
-        for i in range(len(listWeights)):
-            dhArray = np.append(dhArray,
-                                derror[0] * derror[1] * derror[2] * sigmoid_derivative(hiddenLayers[i]) * listZs[0][i] *
-                                listZs[1][i] * listZs[2][i])
-        for i in range(len(zBias)):
-            zBias[i] = np.add(zBias[i], learning_rate * derror[i])
-        for i in range(len(listZs[0])):
-            listZs[0][i] = np.add(listZs[0][i], learning_rate * dsArray1[i])
-            listZs[1][i] = np.add(listZs[1][i], learning_rate * dsArray2[i])
-            listZs[2][i] = np.add(listZs[2][i], learning_rate * dsArray3[i])
-        for i in range(len(bias)):
-            bias = np.add(bias, learning_rate * dhArray[i])
-        for i in range(len(listWeights)):
-            for j in range(len(listWeights[i])):
-                listWeights[i][j] = np.add(listWeights[i][j], learning_rate * dhArray[i] * listX[m][j])
-print("Mean Square Error:", meanSquareError)
+        # Backpropagation
+        outputDerror = error * sigmoid_derivative(output)
+        hiddenDerror = np.dot(outputDerror, weights_hidden_output.T) * sigmoid_derivative(hiddenLayers)
+
+        # Update weights and bias
+        weights_hidden_output += np.dot(hiddenLayers.reshape(hidden_nodes, 1), outputDerror.reshape(1, output_nodes)) * learning_rate
+        bias_output += outputDerror * learning_rate
+        weights_input_hidden += np.dot(listX[i].reshape(input_nodes, 1), hiddenDerror.reshape(1, hidden_nodes)) * learning_rate
+        bias_hidden += hiddenDerror * learning_rate
+
+    meanSquareError /= len(listX)
+    mse_history.append(meanSquareError)
+
 test = np.array([[0, 0, 1, 0, 0,
                   0, 1, 0, 1, 0,
                   0, 1, 1, 1, 0,
                   0, 1, 0, 1, 0,
                   0, 1, 0, 1, 0]])
-hiddenLayers = sigmoid(np.add(np.dot(listWeights, test[0]), bias))
-output = sigmoid(np.add(np.dot(hiddenLayers, listZs), zBias))
+hiddenLayers = sigmoid(np.dot(test[0], weights_input_hidden) + bias_hidden)
+output = sigmoid(np.dot(hiddenLayers, weights_hidden_output) + bias_output)
 print(output)
+# Plot the mean square error
+plt.plot(mse_history)
+plt.xlabel('Iteration')
+plt.ylabel('Mean Square Error')
+plt.title('Mean Square Error vs Iteration')
+plt.show()
