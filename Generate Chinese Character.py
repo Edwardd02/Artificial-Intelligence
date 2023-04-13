@@ -117,14 +117,14 @@ test = np.array([[0, 0, 0, 1, 0, 0, 1, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
                    0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 1, 0]])
-outputs = np.array([])
+outputs = []
 for i in range(len(test)):
     hiddenLayers = sigmoid(np.dot(test[i], weights_input_hidden) + bias_hidden)
     output = sigmoid(np.dot(hiddenLayers, weights_hidden_output) + bias_output)
     print(output)
     for j in range(len(output)):
         output[j] = round(output[j])
-    outputs = np.append(outputs, output)
+    outputs.append(output)
 # Plot the mean square error
 print(outputs)
 for i in range(len(outputs)):
