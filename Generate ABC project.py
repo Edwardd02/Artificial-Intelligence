@@ -33,7 +33,7 @@ listTarget = np.array([[1, 0, 0],
                        [0, 1, 0],
                        [0, 0, 1]])
 input_nodes = 25
-hidden_nodes = 18  # overfitting when larger than 20
+hidden_nodes = 10  # overfitting when larger than 20
 output_nodes = 3
 # Define weights (randomly initialized)
 weights_input_hidden = np.random.uniform(0, 1, size=(input_nodes, hidden_nodes))
@@ -44,7 +44,7 @@ weights_hidden_output = np.random.uniform(0, 1, size=(hidden_nodes, output_nodes
 # Define zBias (randomly initialized)
 bias_output = np.random.uniform(0, 1, size=output_nodes)
 # Set learning rate and number of iterations
-learning_rate = 10
+learning_rate = 0.5
 num_iterations = 1000
 mse_history = []
 for n in range(num_iterations):
