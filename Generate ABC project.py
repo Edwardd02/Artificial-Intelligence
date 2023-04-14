@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
-
 
 
 def sigmoid_derivative(x):
@@ -63,9 +63,11 @@ for n in range(num_iterations):
         hiddenDerror = np.dot(outputDerror, weights_hidden_output.T) * sigmoid_derivative(hiddenLayers)
 
         # Update weights and bias
-        weights_hidden_output += np.dot(hiddenLayers.reshape(hidden_nodes, 1), outputDerror.reshape(1, output_nodes)) * learning_rate
+        weights_hidden_output += np.dot(hiddenLayers.reshape(hidden_nodes, 1),
+                                        outputDerror.reshape(1, output_nodes)) * learning_rate
         bias_output += outputDerror * learning_rate
-        weights_input_hidden += np.dot(listX[i].reshape(input_nodes, 1), hiddenDerror.reshape(1, hidden_nodes)) * learning_rate
+        weights_input_hidden += np.dot(listX[i].reshape(input_nodes, 1),
+                                       hiddenDerror.reshape(1, hidden_nodes)) * learning_rate
         bias_hidden += hiddenDerror * learning_rate
 
     meanSquareError /= len(listX)
